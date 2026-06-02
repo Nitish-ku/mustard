@@ -19,13 +19,11 @@
         --tag-bg: #f0ede8;
         --required: #c0392b;
       }
-
       * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
       }
-
       body {
         font-family: "DM Sans", sans-serif;
         background: var(--paper);
@@ -34,14 +32,14 @@
         line-height: 1.5;
       }
 
-      /* PRINT */
+      /* ── PRINT ── */
       @media print {
         body {
           background: white;
           font-size: 11px;
         }
         .no-print {
-          display: none;
+          display: none !important;
         }
         .page-break {
           page-break-before: always;
@@ -52,9 +50,21 @@
         .cover {
           page-break-after: always;
         }
+        input,
+        textarea {
+          border: none !important;
+          border-bottom: 1px solid #ccc !important;
+          background: transparent !important;
+          box-shadow: none !important;
+          resize: none;
+        }
+        input[type="checkbox"] {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
       }
 
-      /* COVER */
+      /* ── COVER ── */
       .cover {
         background: var(--accent);
         color: white;
@@ -109,9 +119,7 @@
         padding-top: 24px;
         flex-wrap: wrap;
       }
-      .cover-meta-item {
-      }
-      .cover-meta-item .label {
+      .cover-meta-item .clabel {
         font-size: 9.5px;
         letter-spacing: 0.12em;
         text-transform: uppercase;
@@ -123,8 +131,23 @@
         font-size: 13px;
         opacity: 0.9;
       }
+      .cover-input {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        width: 160px;
+        padding: 2px 0;
+        outline: none;
+      }
+      .cover-input::placeholder {
+        color: rgba(255, 255, 255, 0.35);
+        font-style: italic;
+      }
 
-      /* MAIN LAYOUT */
+      /* ── LAYOUT ── */
       .doc {
         max-width: 860px;
         margin: 0 auto;
@@ -133,7 +156,7 @@
         padding: 40px 64px 80px;
       }
 
-      /* SECTION */
+      /* ── SECTION ── */
       section {
         margin-bottom: 44px;
       }
@@ -181,7 +204,7 @@
         color: #3a1a10;
       }
 
-      /* NOTE BOX */
+      /* ── NOTE BOX ── */
       .note-box {
         background: var(--accent-light);
         border-left: 3px solid var(--accent);
@@ -192,7 +215,7 @@
         margin-bottom: 16px;
       }
 
-      /* FIELD GRID */
+      /* ── FIELD GRID ── */
       .fields {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -209,10 +232,12 @@
       }
 
       .field {
-        padding: 11px 14px 10px;
+        padding: 10px 14px 8px;
         border-bottom: 1px solid var(--rule);
         border-right: 1px solid var(--rule);
-        min-height: 58px;
+        min-height: 60px;
+        display: flex;
+        flex-direction: column;
       }
       .field:nth-child(2n) {
         border-right: none;
@@ -227,11 +252,14 @@
         border-right: none;
       }
 
-      .field:last-child,
-      .field:nth-last-child(2):not(.fields.single .field) {
+      /* remove bottom border from last row */
+      .fields:not(.single) .field:nth-last-child(-n + 2) {
         border-bottom: none;
       }
       .fields.single .field:last-child {
+        border-bottom: none;
+      }
+      .fields.three .field:nth-last-child(-n + 3) {
         border-bottom: none;
       }
 
@@ -244,29 +272,56 @@
         display: flex;
         align-items: center;
         gap: 5px;
-        margin-bottom: 5px;
+        margin-bottom: 4px;
+        flex-shrink: 0;
       }
       .req {
         color: var(--required);
         font-size: 10px;
       }
-      .field-line {
-        border-bottom: 1px solid var(--rule);
-        min-height: 22px;
-        width: 100%;
-      }
       .field-note {
         font-size: 10px;
         color: var(--muted);
-        margin-top: 4px;
+        margin-top: 3px;
         font-style: italic;
+        flex-shrink: 0;
       }
 
-      /* CHECKLIST */
+      /* ── INPUTS ── */
+      .fi {
+        flex: 1;
+        border: none;
+        border-bottom: 1px solid var(--rule);
+        background: transparent;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        color: var(--ink);
+        padding: 3px 2px;
+        outline: none;
+        width: 100%;
+        min-height: 26px;
+      }
+      .fi:focus {
+        border-bottom-color: var(--accent);
+        background: rgba(26, 58, 42, 0.03);
+      }
+      .fi::placeholder {
+        color: #c5bfb8;
+        font-style: italic;
+        font-size: 11.5px;
+      }
+
+      textarea.fi {
+        resize: vertical;
+        min-height: 56px;
+        line-height: 1.5;
+        padding-top: 4px;
+      }
+
+      /* ── CHECKLIST ── */
       .checklist {
         display: flex;
         flex-direction: column;
-        gap: 0;
         border: 1.5px solid var(--rule);
         border-radius: 8px;
         overflow: hidden;
@@ -278,22 +333,27 @@
         padding: 10px 14px;
         border-bottom: 1px solid var(--rule);
         font-size: 12.5px;
+        cursor: pointer;
+        transition: background 0.12s;
       }
       .check-item:last-child {
         border-bottom: none;
       }
-      .check-box {
-        width: 16px;
-        height: 16px;
-        border: 1.5px solid var(--rule);
-        border-radius: 3px;
+      .check-item:hover {
+        background: rgba(26, 58, 42, 0.03);
+      }
+      .check-item input[type="checkbox"] {
+        width: 15px;
+        height: 15px;
+        accent-color: var(--accent);
+        cursor: pointer;
         flex-shrink: 0;
-        margin-top: 1px;
-        background: white;
+        margin-top: 2px;
       }
       .check-text {
         flex: 1;
         line-height: 1.45;
+        user-select: none;
       }
       .check-sub {
         font-size: 10.5px;
@@ -301,9 +361,29 @@
         display: block;
         margin-top: 2px;
       }
+      .check-note-input {
+        display: block;
+        margin-top: 5px;
+        width: 100%;
+        border: none;
+        border-bottom: 1px dashed var(--rule);
+        background: transparent;
+        font-family: "DM Sans", sans-serif;
+        font-size: 11.5px;
+        color: var(--ink);
+        padding: 2px 0;
+        outline: none;
+      }
+      .check-note-input:focus {
+        border-bottom-color: var(--accent);
+      }
+      .check-note-input::placeholder {
+        color: #c5bfb8;
+        font-style: italic;
+      }
 
-      /* INLINE TABLE */
-      .inline-table {
+      /* ── CONTACT TABLE ── */
+      .contact-table {
         width: 100%;
         border-collapse: collapse;
         border: 1.5px solid var(--rule);
@@ -311,7 +391,7 @@
         overflow: hidden;
         font-size: 12.5px;
       }
-      .inline-table th {
+      .contact-table th {
         background: var(--tag-bg);
         font-size: 9.5px;
         letter-spacing: 0.1em;
@@ -322,35 +402,30 @@
         text-align: left;
         border-bottom: 1.5px solid var(--rule);
       }
-      .inline-table td {
-        padding: 9px 12px;
+      .contact-table td {
+        padding: 6px 10px;
         border-bottom: 1px solid var(--rule);
-        vertical-align: top;
+        vertical-align: middle;
       }
-      .inline-table tr:last-child td {
+      .contact-table tr:last-child td {
         border-bottom: none;
       }
-      .inline-table .td-line {
-        border-bottom: 1px solid var(--rule);
-        min-height: 20px;
-        display: block;
+      .contact-table .role-cell {
+        color: var(--muted);
+        font-size: 11.5px;
+        width: 180px;
+      }
+      .contact-table input.fi {
+        font-size: 12px;
       }
 
-      /* DIVIDER */
-      .divider {
-        border: none;
-        border-top: 1px dashed var(--rule);
-        margin: 28px 0;
-      }
-
-      /* FOOTER */
+      /* ── FOOTER / SIG ── */
       .footer {
         margin-top: 40px;
         padding-top: 20px;
         border-top: 1.5px solid var(--ink);
         display: flex;
         justify-content: space-between;
-        align-items: flex-end;
         font-size: 10px;
         color: var(--muted);
       }
@@ -368,10 +443,9 @@
       .sig-label {
         font-size: 10px;
         color: var(--muted);
-        letter-spacing: 0.05em;
       }
 
-      /* PRINT BUTTON */
+      /* ── PRINT BTN ── */
       .print-btn {
         position: fixed;
         bottom: 28px;
@@ -379,7 +453,7 @@
         background: var(--accent);
         color: white;
         border: none;
-        padding: 11px 20px;
+        padding: 11px 22px;
         border-radius: 6px;
         font-family: "DM Sans", sans-serif;
         font-size: 12px;
@@ -387,34 +461,19 @@
         cursor: pointer;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
         letter-spacing: 0.04em;
-        display: flex;
-        align-items: center;
-        gap: 8px;
       }
       .print-btn:hover {
         background: #0f2a1a;
       }
 
-      /* BADGE ROW */
-      .badge-row {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 10px;
-      }
-      .badge {
-        font-size: 10px;
-        padding: 3px 10px;
-        border-radius: 20px;
-        border: 1px solid var(--rule);
-        background: white;
+      /* ── SUBSECTION LABEL ── */
+      .sub-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
         color: var(--muted);
-        font-weight: 500;
-      }
-      .badge.active {
-        background: var(--accent-light);
-        color: var(--accent);
-        border-color: var(--accent);
+        margin: 16px 0 10px;
       }
 
       .page-break {
@@ -438,134 +497,137 @@
         <p class="cover-sub">Website Build &amp; Social Media Management</p>
         <div class="cover-meta">
           <div class="cover-meta-item">
-            <span class="label">Client</span
+            <span class="clabel">Client</span
             ><span class="val">North Rank Media</span>
           </div>
           <div class="cover-meta-item">
-            <span class="label">Location</span
+            <span class="clabel">Location</span
             ><span class="val">Oxford, Mississippi</span>
           </div>
           <div class="cover-meta-item">
-            <span class="label">Plan</span
+            <span class="clabel">Plan</span
             ><span class="val">Website + Social (12 posts/mo)</span>
           </div>
           <div class="cover-meta-item">
-            <span class="label">Platforms</span
+            <span class="clabel">Platforms</span
             ><span class="val">Facebook &amp; Instagram</span>
           </div>
           <div class="cover-meta-item">
-            <span class="label">Date</span><span class="val">____________</span>
+            <span class="clabel">Date</span
+            ><span class="val"
+              ><input class="cover-input" placeholder="MM / DD / YYYY"
+            /></span>
           </div>
           <div class="cover-meta-item">
-            <span class="label">Onboarded by</span
-            ><span class="val">____________</span>
+            <span class="clabel">Onboarded by</span
+            ><span class="val"
+              ><input class="cover-input" placeholder="Your name"
+            /></span>
           </div>
         </div>
       </div>
 
       <div class="body-wrap">
-        <!-- SECTION 1: BUSINESS BASICS -->
+        <!-- 01 BUSINESS INFO -->
         <section>
           <div class="section-header">
             <span class="section-num">01</span>
             <span class="section-title">Business Information</span>
             <span class="section-tag">Core</span>
           </div>
-
           <div class="fields">
             <div class="field">
               <div class="field-label">
                 Legal Business Name <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Full legal name" />
             </div>
             <div class="field">
               <div class="field-label">DBA / Brand Name</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="If different from legal name" />
             </div>
             <div class="field">
               <div class="field-label">
                 Primary Owner / Main Contact <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Full name" />
             </div>
             <div class="field">
               <div class="field-label">Owner Title / Role</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. Owner, CEO, Founder" />
             </div>
             <div class="field">
               <div class="field-label">
                 Primary Phone <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="(000) 000-0000" />
               <div class="field-note">Used for GHL contact record</div>
             </div>
             <div class="field">
               <div class="field-label">
                 Primary Email <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="owner@example.com" />
             </div>
             <div class="field">
               <div class="field-label">Business Phone (public-facing)</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="(000) 000-0000" />
             </div>
             <div class="field">
               <div class="field-label">Business Email (public-facing)</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="hello@business.com" />
             </div>
             <div class="field">
               <div class="field-label">
                 Physical Address <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Street address" />
             </div>
             <div class="field">
               <div class="field-label">City / State / Zip</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Oxford, MS 38655" />
             </div>
             <div class="field">
-              <div class="field-label">
-                Service Area (if different from address)
-              </div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                e.g. Oxford, MS + surrounding counties
-              </div>
+              <div class="field-label">Service Area (if different)</div>
+              <input
+                class="fi"
+                placeholder="e.g. Oxford, MS + surrounding counties"
+              />
+              <div class="field-note">Relevant for website copy and GBP</div>
             </div>
             <div class="field">
               <div class="field-label">Business Hours</div>
-              <div class="field-line"></div>
-              <div class="field-note">Mon–Fri, Sat–Sun if applicable</div>
+              <input
+                class="fi"
+                placeholder="e.g. Mon–Fri 9am–5pm, Sat 10am–2pm"
+              />
             </div>
             <div class="field">
               <div class="field-label">
                 Industry / Business Type <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. Digital Marketing Agency" />
             </div>
             <div class="field">
               <div class="field-label">Year Founded</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. 2022" />
             </div>
           </div>
         </section>
 
-        <!-- SECTION 2: POINTS OF CONTACT -->
+        <!-- 02 POINTS OF CONTACT -->
         <section>
           <div class="section-header">
             <span class="section-num">02</span>
             <span class="section-title">Points of Contact</span>
             <span class="section-tag">Core</span>
           </div>
-
           <div class="note-box">
             For social media we'll be coordinating weekly with their in-house
             marketing team. Capture all relevant contacts here so communication
             is never blocked.
           </div>
-
-          <table class="inline-table">
+          <table class="contact-table">
             <thead>
               <tr>
                 <th>Name</th>
@@ -576,28 +638,28 @@
             </thead>
             <tbody>
               <tr>
-                <td><span class="td-line"></span></td>
-                <td>Primary Decision Maker</td>
-                <td><span class="td-line"></span></td>
-                <td><span class="td-line"></span></td>
+                <td><input class="fi" placeholder="Full name" /></td>
+                <td class="role-cell">Primary Decision Maker</td>
+                <td><input class="fi" placeholder="Phone or email" /></td>
+                <td><input class="fi" placeholder="e.g. WhatsApp" /></td>
               </tr>
               <tr>
-                <td><span class="td-line"></span></td>
-                <td>In-House Marketing Contact</td>
-                <td><span class="td-line"></span></td>
-                <td><span class="td-line"></span></td>
+                <td><input class="fi" placeholder="Full name" /></td>
+                <td class="role-cell">In-House Marketing Contact</td>
+                <td><input class="fi" placeholder="Phone or email" /></td>
+                <td><input class="fi" placeholder="e.g. Email" /></td>
               </tr>
               <tr>
-                <td><span class="td-line"></span></td>
-                <td>Billing Contact</td>
-                <td><span class="td-line"></span></td>
-                <td><span class="td-line"></span></td>
+                <td><input class="fi" placeholder="Full name" /></td>
+                <td class="role-cell">Billing Contact</td>
+                <td><input class="fi" placeholder="Phone or email" /></td>
+                <td><input class="fi" placeholder="e.g. Email" /></td>
               </tr>
               <tr>
-                <td><span class="td-line"></span></td>
-                <td>Technical Contact (if any)</td>
-                <td><span class="td-line"></span></td>
-                <td><span class="td-line"></span></td>
+                <td><input class="fi" placeholder="Full name" /></td>
+                <td class="role-cell">Technical Contact (if any)</td>
+                <td><input class="fi" placeholder="Phone or email" /></td>
+                <td><input class="fi" placeholder="e.g. Slack" /></td>
               </tr>
             </tbody>
           </table>
@@ -607,21 +669,23 @@
               <div class="field-label">
                 Preferred Weekly Check-in Day <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. Tuesday" />
               <div class="field-note">For social content coordination call</div>
             </div>
             <div class="field">
               <div class="field-label">Preferred Time (with timezone)</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. 2:00 PM CST" />
             </div>
             <div class="field">
               <div class="field-label">Preferred Communication Channel</div>
-              <div class="field-line"></div>
-              <div class="field-note">Slack / WhatsApp / Email / Calls</div>
+              <input
+                class="fi"
+                placeholder="Slack / WhatsApp / Email / Calls"
+              />
             </div>
             <div class="field">
               <div class="field-label">Content Approval Lead Time Required</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. 48 hours before posting" />
               <div class="field-note">
                 How many days before posting do they want to review?
               </div>
@@ -629,314 +693,281 @@
           </div>
         </section>
 
-        <!-- SECTION 3: BRANDING -->
+        <!-- 03 BRANDING -->
         <section>
           <div class="section-header">
             <span class="section-num">03</span>
             <span class="section-title">Brand &amp; Visual Identity</span>
             <span class="section-tag web">Website + Social</span>
           </div>
-
           <div class="fields">
             <div class="field">
               <div class="field-label">
                 Primary Brand Color(s) — Hex if known
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. #1a3a2a, #ffffff" />
             </div>
             <div class="field">
               <div class="field-label">Secondary / Accent Colors</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. #f0ede8" />
             </div>
             <div class="field">
               <div class="field-label">Font / Typography Preferences</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                e.g. "clean and modern", specific font names
-              </div>
+              <input
+                class="fi"
+                placeholder='e.g. "clean and modern", or specific font name'
+              />
             </div>
             <div class="field">
               <div class="field-label">Brand Tone / Voice</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                e.g. professional, friendly, authoritative, casual
-              </div>
+              <input
+                class="fi"
+                placeholder="e.g. professional, friendly, authoritative"
+              />
             </div>
             <div class="field">
               <div class="field-label">Logo File (final version)</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                PNG (transparent) + SVG preferred. Where to send?
-              </div>
+              <input
+                class="fi"
+                placeholder="PNG transparent + SVG preferred — where sent?"
+              />
+              <div class="field-note">PNG (transparent) + SVG preferred</div>
             </div>
             <div class="field">
               <div class="field-label">Do they have a brand style guide?</div>
-              <div class="field-line"></div>
-              <div class="field-note">Yes / No — if yes, collect file</div>
+              <input class="fi" placeholder="Yes / No — if yes, collect file" />
             </div>
             <div class="field">
               <div class="field-label">Tagline / Slogan</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. More Reviews. More Trust." />
             </div>
             <div class="field">
               <div class="field-label">Competitors / Brands They Admire</div>
-              <div class="field-line"></div>
-              <div class="field-note">For design direction reference</div>
+              <input class="fi" placeholder="For design direction reference" />
             </div>
           </div>
         </section>
 
-        <!-- SECTION 4: WEBSITE -->
+        <!-- 04 WEBSITE -->
         <section>
           <div class="section-header">
             <span class="section-num">04</span>
             <span class="section-title">Website Details</span>
             <span class="section-tag web">Website</span>
           </div>
-
           <div class="fields">
             <div class="field">
               <div class="field-label">
                 Domain Name <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. northrankmedia.com" />
             </div>
             <div class="field">
-              <div class="field-label">
-                Domain Registrar (where it's purchased)
-              </div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                e.g. GoDaddy, Namecheap, Google Domains
-              </div>
+              <div class="field-label">Domain Registrar</div>
+              <input
+                class="fi"
+                placeholder="e.g. GoDaddy, Namecheap, Google Domains"
+              />
             </div>
             <div class="field">
               <div class="field-label">
                 Do we need DNS access? <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Yes / No — for pointing domain to GHL
-              </div>
+              <input
+                class="fi"
+                placeholder="Yes / No — for pointing domain to GHL"
+              />
             </div>
             <div class="field">
               <div class="field-label">Current Website URL (if any)</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="https://..." />
             </div>
             <div class="field">
               <div class="field-label">Pages Needed on New Site</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Home, About, Services, Contact — anything custom?
-              </div>
+              <input
+                class="fi"
+                placeholder="Home, About, Services, Contact — anything custom?"
+              />
             </div>
             <div class="field">
               <div class="field-label">Services to List on Website</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="List all services to display" />
             </div>
             <div class="field">
               <div class="field-label">Headline / Core Value Proposition</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                What's the one thing they want visitors to know?
-              </div>
+              <input
+                class="fi"
+                placeholder="What's the one thing they want visitors to know?"
+              />
             </div>
             <div class="field">
-              <div class="field-label">Do they want a blog section?</div>
-              <div class="field-line"></div>
+              <div class="field-label">Blog Section?</div>
+              <input class="fi" placeholder="Yes / No" />
             </div>
             <div class="field">
               <div class="field-label">Lead Form — What info to collect?</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Name, email, phone, service type, message?
-              </div>
+              <input
+                class="fi"
+                placeholder="Name, email, phone, service, message?"
+              />
             </div>
             <div class="field">
               <div class="field-label">Primary CTA (Call to Action)</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                e.g. "Book a Free Demo", "Call Now", "Get a Quote"
-              </div>
+              <input
+                class="fi"
+                placeholder='e.g. "Book a Free Demo", "Call Now"'
+              />
             </div>
             <div class="field">
               <div class="field-label">Testimonials / Reviews to Feature</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Do they have copy or screenshots to share?
-              </div>
+              <input class="fi" placeholder="Copy or screenshots to share?" />
             </div>
             <div class="field">
               <div class="field-label">Photos / Images for Website</div>
-              <div class="field-line"></div>
-              <div class="field-note">Client to supply? Or use stock?</div>
+              <input class="fi" placeholder="Client supplies? Or use stock?" />
             </div>
             <div class="field">
-              <div class="field-label">
-                Google Analytics / Pixel already set up?
-              </div>
-              <div class="field-line"></div>
-              <div class="field-note">Do they want tracking added?</div>
+              <div class="field-label">Google Analytics / Tracking?</div>
+              <input
+                class="fi"
+                placeholder="Already set up? Want us to add it?"
+              />
             </div>
             <div class="field">
               <div class="field-label">Chat Widget on Site?</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Yes / No — if yes, GHL webchat or other?
-              </div>
+              <input
+                class="fi"
+                placeholder="Yes / No — GHL webchat or other?"
+              />
             </div>
           </div>
 
-          <div style="margin-top: 14px">
-            <p
-              style="
-                font-size: 11px;
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 0.08em;
-                color: var(--muted);
-                margin-bottom: 10px;
-              "
-            >
-              Sections to Remove from Demo Site (pending payment)
-            </p>
-            <div class="fields single">
-              <div class="field" style="min-height: 80px">
-                <div class="field-label">Items Flagged for Removal</div>
-                <div class="field-note" style="margin-top: 6px">
-                  AI Tools section, Interactive Floor Map — confirm any
-                  additional items after final payment.
-                </div>
-                <div class="field-line" style="margin-top: 10px"></div>
+          <p class="sub-label" style="margin-top: 18px">
+            Sections to Remove from Demo Site (pending payment)
+          </p>
+          <div class="fields single">
+            <div class="field" style="min-height: 80px">
+              <div class="field-label">Items Flagged for Removal</div>
+              <div class="field-note" style="margin-bottom: 6px">
+                AI Tools section, Interactive Floor Map confirmed. Note any
+                additional items below.
               </div>
+              <textarea
+                class="fi"
+                placeholder="Additional removal requests from client..."
+              ></textarea>
             </div>
           </div>
         </section>
 
         <div class="page-break"></div>
 
-        <!-- SECTION 5: GHL SETUP -->
+        <!-- 05 GHL SETUP -->
         <section>
           <div class="section-header">
             <span class="section-num">05</span>
             <span class="section-title">GoHighLevel Setup</span>
             <span class="section-tag ghl">GHL</span>
           </div>
-
           <div class="note-box">
-            This section is for internal use. Capture all credentials and access
-            needed so the GHL subaccount can be fully configured without
-            returning to the client.
+            Internal use only. Capture everything needed to fully configure the
+            GHL subaccount without going back to the client.
           </div>
-
           <div class="fields">
             <div class="field">
               <div class="field-label">
                 Subaccount Name in GHL <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Name to create subaccount under" />
             </div>
             <div class="field">
               <div class="field-label">GHL Subaccount ID (after creation)</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Fill after subaccount created" />
             </div>
             <div class="field">
               <div class="field-label">GHL Plan Type</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. Starter, Pro" />
             </div>
             <div class="field">
               <div class="field-label">Custom Domain to Attach</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. northrankmedia.com" />
             </div>
             <div class="field">
               <div class="field-label">
                 GHL User Invite Email (client login)
               </div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Will they have their own GHL login access?
-              </div>
+              <input class="fi" placeholder="Email to send GHL invite to" />
+              <div class="field-note">Will they have their own GHL login?</div>
             </div>
             <div class="field">
               <div class="field-label">Notification Email for GHL Leads</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Where to send new lead alerts" />
             </div>
             <div class="field">
               <div class="field-label">From Name (for GHL emails/SMS)</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. North Rank Media" />
             </div>
             <div class="field">
               <div class="field-label">Reply-To Email</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. info@northrankmedia.com" />
             </div>
             <div class="field">
               <div class="field-label">Timezone</div>
-              <div class="field-line"></div>
-              <div class="field-note">e.g. America/Chicago</div>
+              <input class="fi" placeholder="e.g. America/Chicago" />
             </div>
             <div class="field">
               <div class="field-label">Business Address (for GHL profile)</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Full address" />
             </div>
           </div>
 
-          <p
-            style="
-              font-size: 11px;
-              font-weight: 600;
-              text-transform: uppercase;
-              letter-spacing: 0.08em;
-              color: var(--muted);
-              margin: 16px 0 10px;
-            "
-          >
-            GHL Services to Activate
-          </p>
+          <p class="sub-label">GHL Services to Activate</p>
           <div class="checklist">
-            <div class="check-item">
-              <div class="check-box"></div>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 GHL Website (domain connected + published)<span
                   class="check-sub"
                   >Subdomain or custom domain pointed via DNS</span
                 >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Lead Capture Form (connected to pipeline)<span class="check-sub"
                   >Linked to automation / notification workflow</span
                 >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Contact Pipeline Created<span class="check-sub"
                   >Stages: New Lead → Contacted → Qualified → Closed /
                   Lost</span
                 >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Email / SMS Notification Workflow<span class="check-sub"
                   >Alert owner when new lead comes in</span
                 >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Missed Call Text Back (if in scope)<span class="check-sub"
                   >Confirm whether client wants this enabled</span
                 >
+                <input class="check-note-input" placeholder="Notes..." />
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Social Planner Connected (Facebook + Instagram)<span
                   class="check-sub"
@@ -944,383 +975,356 @@
                   passwords</span
                 >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
-                GBP (Google Business Profile) Connected if applicable
+                GBP (Google Business Profile) Connected<span class="check-sub"
+                  >If in scope</span
+                >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
-              <div class="check-text">Calendar / Booking Page (if needed)</div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
-                Review Request Workflow (if in scope)
+                Calendar / Booking Page<span class="check-sub">If needed</span>
               </div>
-            </div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
+              <div class="check-text">
+                Review Request Workflow<span class="check-sub"
+                  >If in scope — automated SMS/email review ask</span
+                >
+              </div>
+            </label>
           </div>
         </section>
 
-        <!-- SECTION 6: SOCIAL MEDIA -->
+        <!-- 06 SOCIAL MEDIA -->
         <section>
           <div class="section-header">
             <span class="section-num">06</span>
             <span class="section-title">Social Media Management</span>
             <span class="section-tag social">Social</span>
           </div>
-
           <div class="note-box">
             Client is on the 12 posts/month plan — duplicated to both Facebook
             and Instagram. Social accounts will be connected live in GHL
-            (OAuth), so raw credentials are not needed. Capture account details
-            and content preferences here.
+            (OAuth), so raw credentials are not needed.
           </div>
 
-          <p
-            style="
-              font-size: 11px;
-              font-weight: 600;
-              text-transform: uppercase;
-              letter-spacing: 0.08em;
-              color: var(--muted);
-              margin-bottom: 10px;
-            "
-          >
-            Account Details
-          </p>
+          <p class="sub-label">Account Details</p>
           <div class="fields">
             <div class="field">
               <div class="field-label">
                 Facebook Page Name <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Exact page name" />
             </div>
             <div class="field">
               <div class="field-label">Facebook Page URL</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="https://facebook.com/..." />
             </div>
             <div class="field">
               <div class="field-label">
                 Instagram Handle <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Must be an Instagram Business or Creator account
-              </div>
+              <input class="fi" placeholder="@handle" />
+              <div class="field-note">Must be Business or Creator account</div>
             </div>
             <div class="field">
               <div class="field-label">
                 Is Instagram linked to the Facebook Page?
               </div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Required for GHL Social Planner to work
-              </div>
+              <input
+                class="fi"
+                placeholder="Yes / No — required for GHL Social Planner"
+              />
             </div>
             <div class="field">
               <div class="field-label">Facebook Page Admin Email</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Person who will authorize GHL connection
-              </div>
+              <input
+                class="fi"
+                placeholder="Person who will authorize GHL connection"
+              />
             </div>
             <div class="field">
               <div class="field-label">
                 Who will do the GHL connect walkthrough?
               </div>
-              <div class="field-line"></div>
-              <div class="field-note">Owner / marketing team member name</div>
+              <input
+                class="fi"
+                placeholder="Owner / marketing team member name"
+              />
             </div>
           </div>
 
-          <p
-            style="
-              font-size: 11px;
-              font-weight: 600;
-              text-transform: uppercase;
-              letter-spacing: 0.08em;
-              color: var(--muted);
-              margin: 16px 0 10px;
-            "
-          >
-            Content Preferences
-          </p>
+          <p class="sub-label">Content Preferences</p>
           <div class="fields">
             <div class="field">
               <div class="field-label">Target Audience</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Who are they trying to reach? Demographics, local area?
-              </div>
+              <input
+                class="fi"
+                placeholder="Demographics, local area, business type?"
+              />
             </div>
             <div class="field">
               <div class="field-label">Preferred Post Types</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Before/after, tips, promos, reviews, team, behind-scenes?
-              </div>
+              <input
+                class="fi"
+                placeholder="Before/after, tips, promos, reviews, behind-scenes..."
+              />
             </div>
             <div class="field">
               <div class="field-label">Topics / Services to Highlight</div>
-              <div class="field-line"></div>
+              <input
+                class="fi"
+                placeholder="Key services to feature in posts"
+              />
             </div>
             <div class="field">
               <div class="field-label">Topics / Things to Avoid</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Competitors, pricing, sensitive topics
-              </div>
+              <input
+                class="fi"
+                placeholder="Competitors, pricing, sensitive topics"
+              />
             </div>
             <div class="field">
               <div class="field-label">Preferred Post Days / Times</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Or leave blank and we schedule for peak engagement
-              </div>
+              <input
+                class="fi"
+                placeholder="Or leave blank — we schedule for peak engagement"
+              />
             </div>
             <div class="field">
               <div class="field-label">Hashtag Preferences</div>
-              <div class="field-line"></div>
-              <div class="field-note">Any branded hashtags they use?</div>
+              <input class="fi" placeholder="Any branded hashtags they use?" />
             </div>
             <div class="field">
               <div class="field-label">Content They'll Supply to Us</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Photos, videos, offers, announcements — how will they send?
-              </div>
+              <input
+                class="fi"
+                placeholder="Photos, videos, offers, announcements"
+              />
             </div>
             <div class="field">
               <div class="field-label">Content Delivery Method</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Google Drive folder / WhatsApp / Email / Dropbox
-              </div>
+              <input
+                class="fi"
+                placeholder="Google Drive / WhatsApp / Email / Dropbox"
+              />
             </div>
             <div class="field">
               <div class="field-label">Approval Process</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Do they want to approve each post before it goes live?
-              </div>
+              <input
+                class="fi"
+                placeholder="Approve each post? Or post directly?"
+              />
             </div>
             <div class="field">
-              <div class="field-label">Approval Turnaround (hours/days)</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                What happens if no response by deadline?
-              </div>
+              <div class="field-label">Approval Turnaround</div>
+              <input
+                class="fi"
+                placeholder="e.g. 48hrs — what happens if no response?"
+              />
             </div>
           </div>
 
-          <p
-            style="
-              font-size: 11px;
-              font-weight: 600;
-              text-transform: uppercase;
-              letter-spacing: 0.08em;
-              color: var(--muted);
-              margin: 16px 0 10px;
-            "
-          >
-            Weekly Content Call
-          </p>
+          <p class="sub-label">Weekly Content Call</p>
           <div class="fields">
             <div class="field">
               <div class="field-label">Call Format</div>
-              <div class="field-line"></div>
-              <div class="field-note">Zoom / Google Meet / Phone</div>
+              <input class="fi" placeholder="Zoom / Google Meet / Phone" />
             </div>
             <div class="field">
               <div class="field-label">Duration Expected</div>
-              <div class="field-line"></div>
-              <div class="field-note">e.g. 15–30 min</div>
+              <input class="fi" placeholder="e.g. 15–30 min" />
             </div>
             <div class="field">
               <div class="field-label">Recurring Day + Time</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="e.g. Tuesday 2:00 PM CST" />
             </div>
             <div class="field">
               <div class="field-label">Who attends on their side?</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Names / roles" />
             </div>
           </div>
         </section>
 
-        <!-- SECTION 7: ACCESS & ASSETS -->
+        <!-- 07 ACCESS & ASSETS -->
         <section>
           <div class="section-header">
             <span class="section-num">07</span>
             <span class="section-title">Access &amp; Asset Collection</span>
             <span class="section-tag">All Services</span>
           </div>
-
           <div class="checklist">
-            <div class="check-item">
-              <div class="check-box"></div>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
-                Logo files (PNG transparent + SVG)<span class="check-sub"
-                  >Received via: ___________</span
-                >
+                Logo files (PNG transparent + SVG)
+                <input class="check-note-input" placeholder="Received via..." />
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Brand style guide or color/font reference<span class="check-sub"
                   >If available</span
                 >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Domain registrar login / DNS access<span class="check-sub"
                   >Needed to point domain to GHL — or client can do it with our
                   instructions</span
                 >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Facebook Page admin access granted to our account<span
                   class="check-sub"
                   >Required for GHL Social Planner OAuth</span
                 >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Instagram Business account confirmed + linked to FB Page
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Website copy (About, Services, bio text)<span class="check-sub"
                   >If they want custom copy vs what we write from demo</span
                 >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Photos of team / office / work examples<span class="check-sub"
                   >For website and social posts</span
                 >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Google Business Profile access (if managing GBP)<span
                   class="check-sub"
                   >Owner or Manager level access needed</span
                 >
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Existing testimonials / reviews to display
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
                 Any existing marketing materials for reference
               </div>
-            </div>
-            <div class="check-item">
-              <div class="check-box"></div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
               <div class="check-text">
-                Shared folder created for ongoing content delivery<span
-                  class="check-sub"
-                  >Drive / Dropbox link: ___________</span
-                >
+                Shared folder created for ongoing content delivery
+                <input
+                  class="check-note-input"
+                  placeholder="Drive / Dropbox link..."
+                />
               </div>
-            </div>
+            </label>
           </div>
         </section>
 
-        <!-- SECTION 8: BILLING -->
+        <!-- 08 BILLING -->
         <section>
           <div class="section-header">
             <span class="section-num">08</span>
             <span class="section-title">Billing &amp; Agreement</span>
             <span class="section-tag">Admin</span>
           </div>
-
           <div class="fields">
             <div class="field">
               <div class="field-label">
                 Service Package Agreed <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Website + Social (12 posts/mo)" />
             </div>
             <div class="field">
               <div class="field-label">
                 Monthly Retainer Amount <span class="req">*</span>
               </div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="$ per month" />
             </div>
             <div class="field">
               <div class="field-label">Payment Method</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Stripe / Bank transfer / Check / Other
-              </div>
+              <input
+                class="fi"
+                placeholder="Stripe / Bank transfer / Check / Other"
+              />
             </div>
             <div class="field">
               <div class="field-label">Billing Date</div>
-              <div class="field-line"></div>
-              <div class="field-note">e.g. 1st of each month</div>
+              <input class="fi" placeholder="e.g. 1st of each month" />
             </div>
             <div class="field">
               <div class="field-label">Contract / Agreement Signed?</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="Yes / No / Pending" />
             </div>
             <div class="field">
               <div class="field-label">First Payment Received?</div>
-              <div class="field-line"></div>
-              <div class="field-note">
-                Website finalization begins post-payment
-              </div>
+              <input
+                class="fi"
+                placeholder="Yes / No — website finalization begins post-payment"
+              />
             </div>
             <div class="field">
               <div class="field-label">Invoice / Billing Email</div>
-              <div class="field-line"></div>
+              <input class="fi" placeholder="billing@..." />
             </div>
             <div class="field">
-              <div class="field-label">Any setup fee agreed?</div>
-              <div class="field-line"></div>
+              <div class="field-label">Setup Fee Agreed?</div>
+              <input class="fi" placeholder="Yes / No — amount if yes" />
             </div>
           </div>
         </section>
 
-        <!-- SECTION 9: NOTES -->
+        <!-- 09 NOTES -->
         <section>
           <div class="section-header">
             <span class="section-num">09</span>
-            <span class="section-title"
-              >Additional Notes &amp; Special Requests</span
-            >
+            <span class="section-title">Additional Notes &amp; Open Items</span>
           </div>
-
           <div class="fields single">
-            <div class="field" style="min-height: 100px">
+            <div class="field" style="min-height: 90px">
               <div class="field-label">Notes</div>
+              <textarea
+                class="fi"
+                placeholder="General notes from onboarding call..."
+              ></textarea>
             </div>
-            <div class="field" style="min-height: 100px">
+            <div class="field" style="min-height: 90px">
               <div class="field-label">Pending Items / Open Questions</div>
-              <div class="field-note" style="margin-top: 4px">
+              <div class="field-note" style="margin-bottom: 6px">
                 Things not yet resolved that need follow-up
               </div>
+              <textarea
+                class="fi"
+                placeholder="e.g. Waiting on logo files, DNS access TBD..."
+              ></textarea>
             </div>
           </div>
         </section>
