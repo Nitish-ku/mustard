@@ -1,0 +1,1361 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Client Onboarding — North Rank Media</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #0f0e0d;
+        --paper: #faf8f5;
+        --rule: #e2ddd8;
+        --accent: #1a3a2a;
+        --accent-light: #e8f0eb;
+        --muted: #7a756e;
+        --tag-bg: #f0ede8;
+        --required: #c0392b;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--paper);
+        color: var(--ink);
+        font-size: 13.5px;
+        line-height: 1.5;
+      }
+
+      /* PRINT */
+      @media print {
+        body {
+          background: white;
+          font-size: 11px;
+        }
+        .no-print {
+          display: none;
+        }
+        .page-break {
+          page-break-before: always;
+        }
+        section {
+          break-inside: avoid;
+        }
+        .cover {
+          page-break-after: always;
+        }
+      }
+
+      /* COVER */
+      .cover {
+        background: var(--accent);
+        color: white;
+        padding: 60px 64px 48px;
+        position: relative;
+        overflow: hidden;
+      }
+      .cover::before {
+        content: "";
+        position: absolute;
+        right: -80px;
+        top: -80px;
+        width: 340px;
+        height: 340px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .cover::after {
+        content: "";
+        position: absolute;
+        right: 60px;
+        bottom: -60px;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .cover-label {
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        opacity: 0.6;
+        margin-bottom: 18px;
+      }
+      .cover h1 {
+        font-family: "DM Serif Display", serif;
+        font-size: 38px;
+        font-weight: 400;
+        line-height: 1.15;
+        margin-bottom: 10px;
+        max-width: 480px;
+      }
+      .cover-sub {
+        opacity: 0.65;
+        font-size: 14px;
+        margin-bottom: 40px;
+      }
+      .cover-meta {
+        display: flex;
+        gap: 40px;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        padding-top: 24px;
+        flex-wrap: wrap;
+      }
+      .cover-meta-item {
+      }
+      .cover-meta-item .label {
+        font-size: 9.5px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        opacity: 0.5;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .cover-meta-item .val {
+        font-size: 13px;
+        opacity: 0.9;
+      }
+
+      /* MAIN LAYOUT */
+      .doc {
+        max-width: 860px;
+        margin: 0 auto;
+      }
+      .body-wrap {
+        padding: 40px 64px 80px;
+      }
+
+      /* SECTION */
+      section {
+        margin-bottom: 44px;
+      }
+      .section-header {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1.5px solid var(--ink);
+      }
+      .section-num {
+        font-family: "DM Serif Display", serif;
+        font-size: 28px;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .section-tag {
+        margin-left: auto;
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        background: var(--accent-light);
+        color: var(--accent);
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-weight: 600;
+      }
+      .section-tag.ghl {
+        background: #e8f0eb;
+        color: #1a3a2a;
+      }
+      .section-tag.social {
+        background: #e8eaf0;
+        color: #1a2060;
+      }
+      .section-tag.web {
+        background: #f0ebe8;
+        color: #3a1a10;
+      }
+
+      /* NOTE BOX */
+      .note-box {
+        background: var(--accent-light);
+        border-left: 3px solid var(--accent);
+        padding: 10px 14px;
+        border-radius: 0 6px 6px 0;
+        font-size: 12px;
+        color: var(--accent);
+        margin-bottom: 16px;
+      }
+
+      /* FIELD GRID */
+      .fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        border: 1.5px solid var(--rule);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .fields.single {
+        grid-template-columns: 1fr;
+      }
+      .fields.three {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .field {
+        padding: 11px 14px 10px;
+        border-bottom: 1px solid var(--rule);
+        border-right: 1px solid var(--rule);
+        min-height: 58px;
+      }
+      .field:nth-child(2n) {
+        border-right: none;
+      }
+      .fields.three .field:nth-child(3n) {
+        border-right: none;
+      }
+      .fields.three .field:nth-child(2n) {
+        border-right: 1px solid var(--rule);
+      }
+      .fields.single .field {
+        border-right: none;
+      }
+
+      .field:last-child,
+      .field:nth-last-child(2):not(.fields.single .field) {
+        border-bottom: none;
+      }
+      .fields.single .field:last-child {
+        border-bottom: none;
+      }
+
+      .field-label {
+        font-size: 9.5px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 5px;
+      }
+      .req {
+        color: var(--required);
+        font-size: 10px;
+      }
+      .field-line {
+        border-bottom: 1px solid var(--rule);
+        min-height: 22px;
+        width: 100%;
+      }
+      .field-note {
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 4px;
+        font-style: italic;
+      }
+
+      /* CHECKLIST */
+      .checklist {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        border: 1.5px solid var(--rule);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .check-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--rule);
+        font-size: 12.5px;
+      }
+      .check-item:last-child {
+        border-bottom: none;
+      }
+      .check-box {
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid var(--rule);
+        border-radius: 3px;
+        flex-shrink: 0;
+        margin-top: 1px;
+        background: white;
+      }
+      .check-text {
+        flex: 1;
+        line-height: 1.45;
+      }
+      .check-sub {
+        font-size: 10.5px;
+        color: var(--muted);
+        display: block;
+        margin-top: 2px;
+      }
+
+      /* INLINE TABLE */
+      .inline-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1.5px solid var(--rule);
+        border-radius: 8px;
+        overflow: hidden;
+        font-size: 12.5px;
+      }
+      .inline-table th {
+        background: var(--tag-bg);
+        font-size: 9.5px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 600;
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1.5px solid var(--rule);
+      }
+      .inline-table td {
+        padding: 9px 12px;
+        border-bottom: 1px solid var(--rule);
+        vertical-align: top;
+      }
+      .inline-table tr:last-child td {
+        border-bottom: none;
+      }
+      .inline-table .td-line {
+        border-bottom: 1px solid var(--rule);
+        min-height: 20px;
+        display: block;
+      }
+
+      /* DIVIDER */
+      .divider {
+        border: none;
+        border-top: 1px dashed var(--rule);
+        margin: 28px 0;
+      }
+
+      /* FOOTER */
+      .footer {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1.5px solid var(--ink);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .sig-block {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        margin-top: 32px;
+      }
+      .sig-line {
+        border-bottom: 1px solid var(--ink);
+        min-height: 36px;
+        margin-bottom: 6px;
+      }
+      .sig-label {
+        font-size: 10px;
+        color: var(--muted);
+        letter-spacing: 0.05em;
+      }
+
+      /* PRINT BUTTON */
+      .print-btn {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 11px 20px;
+        border-radius: 6px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+        letter-spacing: 0.04em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .print-btn:hover {
+        background: #0f2a1a;
+      }
+
+      /* BADGE ROW */
+      .badge-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .badge {
+        font-size: 10px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        border: 1px solid var(--rule);
+        background: white;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .badge.active {
+        background: var(--accent-light);
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .page-break {
+        display: none;
+      }
+      @media print {
+        .page-break {
+          display: block;
+          page-break-before: always;
+          height: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="doc">
+      <!-- COVER -->
+      <div class="cover">
+        <p class="cover-label">Agency Client Onboarding Document</p>
+        <h1>North Rank Media<br />Client Onboarding</h1>
+        <p class="cover-sub">Website Build &amp; Social Media Management</p>
+        <div class="cover-meta">
+          <div class="cover-meta-item">
+            <span class="label">Client</span
+            ><span class="val">North Rank Media</span>
+          </div>
+          <div class="cover-meta-item">
+            <span class="label">Location</span
+            ><span class="val">Oxford, Mississippi</span>
+          </div>
+          <div class="cover-meta-item">
+            <span class="label">Plan</span
+            ><span class="val">Website + Social (12 posts/mo)</span>
+          </div>
+          <div class="cover-meta-item">
+            <span class="label">Platforms</span
+            ><span class="val">Facebook &amp; Instagram</span>
+          </div>
+          <div class="cover-meta-item">
+            <span class="label">Date</span><span class="val">____________</span>
+          </div>
+          <div class="cover-meta-item">
+            <span class="label">Onboarded by</span
+            ><span class="val">____________</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="body-wrap">
+        <!-- SECTION 1: BUSINESS BASICS -->
+        <section>
+          <div class="section-header">
+            <span class="section-num">01</span>
+            <span class="section-title">Business Information</span>
+            <span class="section-tag">Core</span>
+          </div>
+
+          <div class="fields">
+            <div class="field">
+              <div class="field-label">
+                Legal Business Name <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">DBA / Brand Name</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Primary Owner / Main Contact <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Owner Title / Role</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Primary Phone <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+              <div class="field-note">Used for GHL contact record</div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Primary Email <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Business Phone (public-facing)</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Business Email (public-facing)</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Physical Address <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">City / State / Zip</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Service Area (if different from address)
+              </div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                e.g. Oxford, MS + surrounding counties
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Business Hours</div>
+              <div class="field-line"></div>
+              <div class="field-note">Mon–Fri, Sat–Sun if applicable</div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Industry / Business Type <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Year Founded</div>
+              <div class="field-line"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: POINTS OF CONTACT -->
+        <section>
+          <div class="section-header">
+            <span class="section-num">02</span>
+            <span class="section-title">Points of Contact</span>
+            <span class="section-tag">Core</span>
+          </div>
+
+          <div class="note-box">
+            For social media we'll be coordinating weekly with their in-house
+            marketing team. Capture all relevant contacts here so communication
+            is never blocked.
+          </div>
+
+          <table class="inline-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Phone / Email</th>
+                <th>Best Contact Method</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="td-line"></span></td>
+                <td>Primary Decision Maker</td>
+                <td><span class="td-line"></span></td>
+                <td><span class="td-line"></span></td>
+              </tr>
+              <tr>
+                <td><span class="td-line"></span></td>
+                <td>In-House Marketing Contact</td>
+                <td><span class="td-line"></span></td>
+                <td><span class="td-line"></span></td>
+              </tr>
+              <tr>
+                <td><span class="td-line"></span></td>
+                <td>Billing Contact</td>
+                <td><span class="td-line"></span></td>
+                <td><span class="td-line"></span></td>
+              </tr>
+              <tr>
+                <td><span class="td-line"></span></td>
+                <td>Technical Contact (if any)</td>
+                <td><span class="td-line"></span></td>
+                <td><span class="td-line"></span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="fields" style="margin-top: 14px">
+            <div class="field">
+              <div class="field-label">
+                Preferred Weekly Check-in Day <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+              <div class="field-note">For social content coordination call</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Preferred Time (with timezone)</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Preferred Communication Channel</div>
+              <div class="field-line"></div>
+              <div class="field-note">Slack / WhatsApp / Email / Calls</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Content Approval Lead Time Required</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                How many days before posting do they want to review?
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: BRANDING -->
+        <section>
+          <div class="section-header">
+            <span class="section-num">03</span>
+            <span class="section-title">Brand &amp; Visual Identity</span>
+            <span class="section-tag web">Website + Social</span>
+          </div>
+
+          <div class="fields">
+            <div class="field">
+              <div class="field-label">
+                Primary Brand Color(s) — Hex if known
+              </div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Secondary / Accent Colors</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Font / Typography Preferences</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                e.g. "clean and modern", specific font names
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Brand Tone / Voice</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                e.g. professional, friendly, authoritative, casual
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Logo File (final version)</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                PNG (transparent) + SVG preferred. Where to send?
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Do they have a brand style guide?</div>
+              <div class="field-line"></div>
+              <div class="field-note">Yes / No — if yes, collect file</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Tagline / Slogan</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Competitors / Brands They Admire</div>
+              <div class="field-line"></div>
+              <div class="field-note">For design direction reference</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: WEBSITE -->
+        <section>
+          <div class="section-header">
+            <span class="section-num">04</span>
+            <span class="section-title">Website Details</span>
+            <span class="section-tag web">Website</span>
+          </div>
+
+          <div class="fields">
+            <div class="field">
+              <div class="field-label">
+                Domain Name <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Domain Registrar (where it's purchased)
+              </div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                e.g. GoDaddy, Namecheap, Google Domains
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Do we need DNS access? <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Yes / No — for pointing domain to GHL
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Current Website URL (if any)</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Pages Needed on New Site</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Home, About, Services, Contact — anything custom?
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Services to List on Website</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Headline / Core Value Proposition</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                What's the one thing they want visitors to know?
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Do they want a blog section?</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Lead Form — What info to collect?</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Name, email, phone, service type, message?
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Primary CTA (Call to Action)</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                e.g. "Book a Free Demo", "Call Now", "Get a Quote"
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Testimonials / Reviews to Feature</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Do they have copy or screenshots to share?
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Photos / Images for Website</div>
+              <div class="field-line"></div>
+              <div class="field-note">Client to supply? Or use stock?</div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Google Analytics / Pixel already set up?
+              </div>
+              <div class="field-line"></div>
+              <div class="field-note">Do they want tracking added?</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Chat Widget on Site?</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Yes / No — if yes, GHL webchat or other?
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px">
+            <p
+              style="
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: var(--muted);
+                margin-bottom: 10px;
+              "
+            >
+              Sections to Remove from Demo Site (pending payment)
+            </p>
+            <div class="fields single">
+              <div class="field" style="min-height: 80px">
+                <div class="field-label">Items Flagged for Removal</div>
+                <div class="field-note" style="margin-top: 6px">
+                  AI Tools section, Interactive Floor Map — confirm any
+                  additional items after final payment.
+                </div>
+                <div class="field-line" style="margin-top: 10px"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="page-break"></div>
+
+        <!-- SECTION 5: GHL SETUP -->
+        <section>
+          <div class="section-header">
+            <span class="section-num">05</span>
+            <span class="section-title">GoHighLevel Setup</span>
+            <span class="section-tag ghl">GHL</span>
+          </div>
+
+          <div class="note-box">
+            This section is for internal use. Capture all credentials and access
+            needed so the GHL subaccount can be fully configured without
+            returning to the client.
+          </div>
+
+          <div class="fields">
+            <div class="field">
+              <div class="field-label">
+                Subaccount Name in GHL <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">GHL Subaccount ID (after creation)</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">GHL Plan Type</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Custom Domain to Attach</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                GHL User Invite Email (client login)
+              </div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Will they have their own GHL login access?
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Notification Email for GHL Leads</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">From Name (for GHL emails/SMS)</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Reply-To Email</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Timezone</div>
+              <div class="field-line"></div>
+              <div class="field-note">e.g. America/Chicago</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Business Address (for GHL profile)</div>
+              <div class="field-line"></div>
+            </div>
+          </div>
+
+          <p
+            style="
+              font-size: 11px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.08em;
+              color: var(--muted);
+              margin: 16px 0 10px;
+            "
+          >
+            GHL Services to Activate
+          </p>
+          <div class="checklist">
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                GHL Website (domain connected + published)<span
+                  class="check-sub"
+                  >Subdomain or custom domain pointed via DNS</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Lead Capture Form (connected to pipeline)<span class="check-sub"
+                  >Linked to automation / notification workflow</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Contact Pipeline Created<span class="check-sub"
+                  >Stages: New Lead → Contacted → Qualified → Closed /
+                  Lost</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Email / SMS Notification Workflow<span class="check-sub"
+                  >Alert owner when new lead comes in</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Missed Call Text Back (if in scope)<span class="check-sub"
+                  >Confirm whether client wants this enabled</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Social Planner Connected (Facebook + Instagram)<span
+                  class="check-sub"
+                  >Walk client through OAuth connection in GHL — do not collect
+                  passwords</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                GBP (Google Business Profile) Connected if applicable
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">Calendar / Booking Page (if needed)</div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Review Request Workflow (if in scope)
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 6: SOCIAL MEDIA -->
+        <section>
+          <div class="section-header">
+            <span class="section-num">06</span>
+            <span class="section-title">Social Media Management</span>
+            <span class="section-tag social">Social</span>
+          </div>
+
+          <div class="note-box">
+            Client is on the 12 posts/month plan — duplicated to both Facebook
+            and Instagram. Social accounts will be connected live in GHL
+            (OAuth), so raw credentials are not needed. Capture account details
+            and content preferences here.
+          </div>
+
+          <p
+            style="
+              font-size: 11px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.08em;
+              color: var(--muted);
+              margin-bottom: 10px;
+            "
+          >
+            Account Details
+          </p>
+          <div class="fields">
+            <div class="field">
+              <div class="field-label">
+                Facebook Page Name <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Facebook Page URL</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Instagram Handle <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Must be an Instagram Business or Creator account
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Is Instagram linked to the Facebook Page?
+              </div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Required for GHL Social Planner to work
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Facebook Page Admin Email</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Person who will authorize GHL connection
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Who will do the GHL connect walkthrough?
+              </div>
+              <div class="field-line"></div>
+              <div class="field-note">Owner / marketing team member name</div>
+            </div>
+          </div>
+
+          <p
+            style="
+              font-size: 11px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.08em;
+              color: var(--muted);
+              margin: 16px 0 10px;
+            "
+          >
+            Content Preferences
+          </p>
+          <div class="fields">
+            <div class="field">
+              <div class="field-label">Target Audience</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Who are they trying to reach? Demographics, local area?
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Preferred Post Types</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Before/after, tips, promos, reviews, team, behind-scenes?
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Topics / Services to Highlight</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Topics / Things to Avoid</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Competitors, pricing, sensitive topics
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Preferred Post Days / Times</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Or leave blank and we schedule for peak engagement
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Hashtag Preferences</div>
+              <div class="field-line"></div>
+              <div class="field-note">Any branded hashtags they use?</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Content They'll Supply to Us</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Photos, videos, offers, announcements — how will they send?
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Content Delivery Method</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Google Drive folder / WhatsApp / Email / Dropbox
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Approval Process</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Do they want to approve each post before it goes live?
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Approval Turnaround (hours/days)</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                What happens if no response by deadline?
+              </div>
+            </div>
+          </div>
+
+          <p
+            style="
+              font-size: 11px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.08em;
+              color: var(--muted);
+              margin: 16px 0 10px;
+            "
+          >
+            Weekly Content Call
+          </p>
+          <div class="fields">
+            <div class="field">
+              <div class="field-label">Call Format</div>
+              <div class="field-line"></div>
+              <div class="field-note">Zoom / Google Meet / Phone</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Duration Expected</div>
+              <div class="field-line"></div>
+              <div class="field-note">e.g. 15–30 min</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Recurring Day + Time</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Who attends on their side?</div>
+              <div class="field-line"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 7: ACCESS & ASSETS -->
+        <section>
+          <div class="section-header">
+            <span class="section-num">07</span>
+            <span class="section-title">Access &amp; Asset Collection</span>
+            <span class="section-tag">All Services</span>
+          </div>
+
+          <div class="checklist">
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Logo files (PNG transparent + SVG)<span class="check-sub"
+                  >Received via: ___________</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Brand style guide or color/font reference<span class="check-sub"
+                  >If available</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Domain registrar login / DNS access<span class="check-sub"
+                  >Needed to point domain to GHL — or client can do it with our
+                  instructions</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Facebook Page admin access granted to our account<span
+                  class="check-sub"
+                  >Required for GHL Social Planner OAuth</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Instagram Business account confirmed + linked to FB Page
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Website copy (About, Services, bio text)<span class="check-sub"
+                  >If they want custom copy vs what we write from demo</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Photos of team / office / work examples<span class="check-sub"
+                  >For website and social posts</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Google Business Profile access (if managing GBP)<span
+                  class="check-sub"
+                  >Owner or Manager level access needed</span
+                >
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Existing testimonials / reviews to display
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Any existing marketing materials for reference
+              </div>
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              <div class="check-text">
+                Shared folder created for ongoing content delivery<span
+                  class="check-sub"
+                  >Drive / Dropbox link: ___________</span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 8: BILLING -->
+        <section>
+          <div class="section-header">
+            <span class="section-num">08</span>
+            <span class="section-title">Billing &amp; Agreement</span>
+            <span class="section-tag">Admin</span>
+          </div>
+
+          <div class="fields">
+            <div class="field">
+              <div class="field-label">
+                Service Package Agreed <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">
+                Monthly Retainer Amount <span class="req">*</span>
+              </div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Payment Method</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Stripe / Bank transfer / Check / Other
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Billing Date</div>
+              <div class="field-line"></div>
+              <div class="field-note">e.g. 1st of each month</div>
+            </div>
+            <div class="field">
+              <div class="field-label">Contract / Agreement Signed?</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">First Payment Received?</div>
+              <div class="field-line"></div>
+              <div class="field-note">
+                Website finalization begins post-payment
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-label">Invoice / Billing Email</div>
+              <div class="field-line"></div>
+            </div>
+            <div class="field">
+              <div class="field-label">Any setup fee agreed?</div>
+              <div class="field-line"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 9: NOTES -->
+        <section>
+          <div class="section-header">
+            <span class="section-num">09</span>
+            <span class="section-title"
+              >Additional Notes &amp; Special Requests</span
+            >
+          </div>
+
+          <div class="fields single">
+            <div class="field" style="min-height: 100px">
+              <div class="field-label">Notes</div>
+            </div>
+            <div class="field" style="min-height: 100px">
+              <div class="field-label">Pending Items / Open Questions</div>
+              <div class="field-note" style="margin-top: 4px">
+                Things not yet resolved that need follow-up
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SIGNATURES -->
+        <div class="sig-block">
+          <div>
+            <div class="sig-line"></div>
+            <div class="sig-label">Client Signature</div>
+          </div>
+          <div>
+            <div class="sig-line"></div>
+            <div class="sig-label">Agency Representative</div>
+          </div>
+          <div>
+            <div class="sig-line"></div>
+            <div class="sig-label">Client Print Name &amp; Date</div>
+          </div>
+          <div>
+            <div class="sig-line"></div>
+            <div class="sig-label">Rep Print Name &amp; Date</div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span>North Rank Media — Client Onboarding Document</span>
+          <span>Confidential — For Internal Use</span>
+        </div>
+      </div>
+      <!-- /body-wrap -->
+    </div>
+    <!-- /doc -->
+
+    <button class="print-btn no-print" onclick="window.print()">
+      ⎙ Print / Save PDF
+    </button>
+  </body>
+</html>
