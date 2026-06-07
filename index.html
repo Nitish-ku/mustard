@@ -50,17 +50,33 @@
         .cover {
           page-break-after: always;
         }
-        input,
-        textarea {
-          border: none !important;
+
+        /* The key fix: make every editable div show full content, no clipping */
+        .fi-wrap {
           border-bottom: 1px solid #ccc !important;
-          background: transparent !important;
-          box-shadow: none !important;
-          resize: none;
+          min-height: 22px;
+          padding-bottom: 2px;
+        }
+        .fi-wrap[data-text]:empty::before {
+          content: "";
+        }
+        .fi-div {
+          min-height: 20px;
+          white-space: pre-wrap;
+          word-break: break-word;
+        }
+        textarea.fi-div {
+          display: block;
+        }
+        .cover-input-div {
+          color: white;
         }
         input[type="checkbox"] {
           -webkit-print-color-adjust: exact;
           print-color-adjust: exact;
+        }
+        .check-note-div {
+          min-height: 16px;
         }
       }
 
@@ -131,20 +147,27 @@
         font-size: 13px;
         opacity: 0.9;
       }
-      .cover-input {
-        background: transparent;
-        border: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      .cover-input-div {
+        display: inline-block;
+        min-width: 140px;
+        max-width: 200px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
         color: white;
-        font-family: "DM Sans", sans-serif;
         font-size: 13px;
-        width: 160px;
         padding: 2px 0;
         outline: none;
+        font-family: "DM Sans", sans-serif;
+        white-space: pre-wrap;
+        word-break: break-word;
       }
-      .cover-input::placeholder {
+      .cover-input-div:empty::before {
+        content: attr(data-ph);
         color: rgba(255, 255, 255, 0.35);
         font-style: italic;
+        pointer-events: none;
+      }
+      .cover-input-div:focus {
+        border-bottom-color: rgba(255, 255, 255, 0.7);
       }
 
       /* ── LAYOUT ── */
@@ -191,9 +214,9 @@
         border-radius: 20px;
         font-weight: 600;
       }
-      .section-tag.ghl {
-        background: #e8f0eb;
-        color: #1a3a2a;
+      .section-tag.int {
+        background: #f0ede8;
+        color: #5a3010;
       }
       .section-tag.social {
         background: #e8eaf0;
@@ -227,39 +250,24 @@
       .fields.single {
         grid-template-columns: 1fr;
       }
-      .fields.three {
-        grid-template-columns: 1fr 1fr 1fr;
-      }
 
       .field {
-        padding: 10px 14px 8px;
+        padding: 10px 14px 10px;
         border-bottom: 1px solid var(--rule);
         border-right: 1px solid var(--rule);
-        min-height: 60px;
         display: flex;
         flex-direction: column;
       }
       .field:nth-child(2n) {
         border-right: none;
       }
-      .fields.three .field:nth-child(3n) {
-        border-right: none;
-      }
-      .fields.three .field:nth-child(2n) {
-        border-right: 1px solid var(--rule);
-      }
       .fields.single .field {
         border-right: none;
       }
-
-      /* remove bottom border from last row */
       .fields:not(.single) .field:nth-last-child(-n + 2) {
         border-bottom: none;
       }
       .fields.single .field:last-child {
-        border-bottom: none;
-      }
-      .fields.three .field:nth-last-child(-n + 3) {
         border-bottom: none;
       }
 
@@ -272,7 +280,7 @@
         display: flex;
         align-items: center;
         gap: 5px;
-        margin-bottom: 4px;
+        margin-bottom: 5px;
         flex-shrink: 0;
       }
       .req {
@@ -287,35 +295,34 @@
         flex-shrink: 0;
       }
 
-      /* ── INPUTS ── */
-      .fi {
+      /* ── CONTENTEDITABLE FIELDS (the core fix) ── */
+      .fi-div {
         flex: 1;
-        border: none;
+        min-height: 26px;
         border-bottom: 1px solid var(--rule);
-        background: transparent;
+        outline: none;
         font-family: "DM Sans", sans-serif;
         font-size: 13px;
         color: var(--ink);
         padding: 3px 2px;
-        outline: none;
-        width: 100%;
-        min-height: 26px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        /* no overflow hidden, no fixed height — content always fully visible */
       }
-      .fi:focus {
+      .fi-div:focus {
         border-bottom-color: var(--accent);
         background: rgba(26, 58, 42, 0.03);
+        border-radius: 2px;
       }
-      .fi::placeholder {
+      .fi-div:empty::before {
+        content: attr(data-ph);
         color: #c5bfb8;
         font-style: italic;
         font-size: 11.5px;
+        pointer-events: none;
       }
-
-      textarea.fi {
-        resize: vertical;
-        min-height: 56px;
-        line-height: 1.5;
-        padding-top: 4px;
+      .fi-div.tall {
+        min-height: 60px;
       }
 
       /* ── CHECKLIST ── */
@@ -353,7 +360,6 @@
       .check-text {
         flex: 1;
         line-height: 1.45;
-        user-select: none;
       }
       .check-sub {
         font-size: 10.5px;
@@ -361,25 +367,28 @@
         display: block;
         margin-top: 2px;
       }
-      .check-note-input {
+      .check-note-div {
         display: block;
-        margin-top: 5px;
+        margin-top: 6px;
         width: 100%;
-        border: none;
+        min-height: 20px;
         border-bottom: 1px dashed var(--rule);
-        background: transparent;
+        outline: none;
         font-family: "DM Sans", sans-serif;
         font-size: 11.5px;
         color: var(--ink);
         padding: 2px 0;
-        outline: none;
+        white-space: pre-wrap;
+        word-break: break-word;
       }
-      .check-note-input:focus {
+      .check-note-div:focus {
         border-bottom-color: var(--accent);
       }
-      .check-note-input::placeholder {
+      .check-note-div:empty::before {
+        content: attr(data-ph);
         color: #c5bfb8;
         font-style: italic;
+        pointer-events: none;
       }
 
       /* ── CONTACT TABLE ── */
@@ -415,11 +424,21 @@
         font-size: 11.5px;
         width: 180px;
       }
-      .contact-table input.fi {
+      .contact-table .fi-div {
         font-size: 12px;
       }
 
-      /* ── FOOTER / SIG ── */
+      /* ── SUBSECTION LABEL ── */
+      .sub-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin: 16px 0 10px;
+      }
+
+      /* ── SIG / FOOTER ── */
       .footer {
         margin-top: 40px;
         padding-top: 20px;
@@ -466,16 +485,6 @@
         background: #0f2a1a;
       }
 
-      /* ── SUBSECTION LABEL ── */
-      .sub-label {
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--muted);
-        margin: 16px 0 10px;
-      }
-
       .page-break {
         display: none;
       }
@@ -515,14 +524,22 @@
           <div class="cover-meta-item">
             <span class="clabel">Date</span
             ><span class="val"
-              ><input class="cover-input" placeholder="MM / DD / YYYY"
-            /></span>
+              ><span
+                class="cover-input-div"
+                contenteditable="true"
+                data-ph="MM / DD / YYYY"
+              ></span
+            ></span>
           </div>
           <div class="cover-meta-item">
             <span class="clabel">Onboarded by</span
             ><span class="val"
-              ><input class="cover-input" placeholder="Your name"
-            /></span>
+              ><span
+                class="cover-input-div"
+                contenteditable="true"
+                data-ph="Your name"
+              ></span
+            ></span>
           </div>
         </div>
       </div>
@@ -540,77 +557,129 @@
               <div class="field-label">
                 Legal Business Name <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="Full legal name" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Full legal name"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">DBA / Brand Name</div>
-              <input class="fi" placeholder="If different from legal name" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="If different from legal name"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">
                 Primary Owner / Main Contact <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="Full name" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Full name"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Owner Title / Role</div>
-              <input class="fi" placeholder="e.g. Owner, CEO, Founder" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. Owner, CEO, Founder"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">
                 Primary Phone <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="(000) 000-0000" />
-              <div class="field-note">Used for GHL contact record</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="(000) 000-0000"
+              ></div>
+              <div class="field-note">Owner's direct number</div>
             </div>
             <div class="field">
               <div class="field-label">
                 Primary Email <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="owner@example.com" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="owner@example.com"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Business Phone (public-facing)</div>
-              <input class="fi" placeholder="(000) 000-0000" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="(000) 000-0000"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Business Email (public-facing)</div>
-              <input class="fi" placeholder="hello@business.com" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="hello@business.com"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">
                 Physical Address <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="Street address" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Street address"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">City / State / Zip</div>
-              <input class="fi" placeholder="Oxford, MS 38655" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Oxford, MS 38655"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Service Area (if different)</div>
-              <input
-                class="fi"
-                placeholder="e.g. Oxford, MS + surrounding counties"
-              />
-              <div class="field-note">Relevant for website copy and GBP</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. Oxford, MS + surrounding counties"
+              ></div>
+              <div class="field-note">
+                Used for website copy and local listings
+              </div>
             </div>
             <div class="field">
               <div class="field-label">Business Hours</div>
-              <input
-                class="fi"
-                placeholder="e.g. Mon–Fri 9am–5pm, Sat 10am–2pm"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. Mon–Fri 9am–5pm, Sat 10am–2pm"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">
                 Industry / Business Type <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="e.g. Digital Marketing Agency" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. Digital Marketing Agency"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Year Founded</div>
-              <input class="fi" placeholder="e.g. 2022" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. 2022"
+              ></div>
             </div>
           </div>
         </section>
@@ -623,9 +692,9 @@
             <span class="section-tag">Core</span>
           </div>
           <div class="note-box">
-            For social media we'll be coordinating weekly with their in-house
-            marketing team. Capture all relevant contacts here so communication
-            is never blocked.
+            For social media we'll be coordinating weekly with the in-house
+            marketing team. Capture all relevant contacts so communication is
+            never blocked.
           </div>
           <table class="contact-table">
             <thead>
@@ -638,28 +707,100 @@
             </thead>
             <tbody>
               <tr>
-                <td><input class="fi" placeholder="Full name" /></td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="Full name"
+                  ></div>
+                </td>
                 <td class="role-cell">Primary Decision Maker</td>
-                <td><input class="fi" placeholder="Phone or email" /></td>
-                <td><input class="fi" placeholder="e.g. WhatsApp" /></td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="Phone or email"
+                  ></div>
+                </td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="e.g. WhatsApp"
+                  ></div>
+                </td>
               </tr>
               <tr>
-                <td><input class="fi" placeholder="Full name" /></td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="Full name"
+                  ></div>
+                </td>
                 <td class="role-cell">In-House Marketing Contact</td>
-                <td><input class="fi" placeholder="Phone or email" /></td>
-                <td><input class="fi" placeholder="e.g. Email" /></td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="Phone or email"
+                  ></div>
+                </td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="e.g. Email"
+                  ></div>
+                </td>
               </tr>
               <tr>
-                <td><input class="fi" placeholder="Full name" /></td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="Full name"
+                  ></div>
+                </td>
                 <td class="role-cell">Billing Contact</td>
-                <td><input class="fi" placeholder="Phone or email" /></td>
-                <td><input class="fi" placeholder="e.g. Email" /></td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="Phone or email"
+                  ></div>
+                </td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="e.g. Email"
+                  ></div>
+                </td>
               </tr>
               <tr>
-                <td><input class="fi" placeholder="Full name" /></td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="Full name"
+                  ></div>
+                </td>
                 <td class="role-cell">Technical Contact (if any)</td>
-                <td><input class="fi" placeholder="Phone or email" /></td>
-                <td><input class="fi" placeholder="e.g. Slack" /></td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="Phone or email"
+                  ></div>
+                </td>
+                <td>
+                  <div
+                    class="fi-div"
+                    contenteditable="true"
+                    data-ph="e.g. Slack"
+                  ></div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -669,26 +810,36 @@
               <div class="field-label">
                 Preferred Weekly Check-in Day <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="e.g. Tuesday" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. Tuesday"
+              ></div>
               <div class="field-note">For social content coordination call</div>
             </div>
             <div class="field">
               <div class="field-label">Preferred Time (with timezone)</div>
-              <input class="fi" placeholder="e.g. 2:00 PM CST" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. 2:00 PM CST"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Preferred Communication Channel</div>
-              <input
-                class="fi"
-                placeholder="Slack / WhatsApp / Email / Calls"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="WhatsApp / Email / Calls"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">Content Approval Lead Time Required</div>
-              <input class="fi" placeholder="e.g. 48 hours before posting" />
-              <div class="field-note">
-                How many days before posting do they want to review?
-              </div>
+              <div class="field-label">Content Approval Lead Time</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. 48 hours before posting"
+              ></div>
             </div>
           </div>
         </section>
@@ -702,48 +853,68 @@
           </div>
           <div class="fields">
             <div class="field">
-              <div class="field-label">
-                Primary Brand Color(s) — Hex if known
-              </div>
-              <input class="fi" placeholder="e.g. #1a3a2a, #ffffff" />
+              <div class="field-label">Primary Brand Color(s)</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Hex codes if known, e.g. #1a3a2a"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Secondary / Accent Colors</div>
-              <input class="fi" placeholder="e.g. #f0ede8" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. #f0ede8"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Font / Typography Preferences</div>
-              <input
-                class="fi"
-                placeholder='e.g. "clean and modern", or specific font name'
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph='e.g. "clean and modern", or specific font name'
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Brand Tone / Voice</div>
-              <input
-                class="fi"
-                placeholder="e.g. professional, friendly, authoritative"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. professional, friendly, authoritative"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">Logo File (final version)</div>
-              <input
-                class="fi"
-                placeholder="PNG transparent + SVG preferred — where sent?"
-              />
-              <div class="field-note">PNG (transparent) + SVG preferred</div>
+              <div class="field-label">Logo Files</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="PNG (transparent) + SVG preferred — where sent?"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">Do they have a brand style guide?</div>
-              <input class="fi" placeholder="Yes / No — if yes, collect file" />
+              <div class="field-label">Brand Style Guide?</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Yes / No — if yes, collect file"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Tagline / Slogan</div>
-              <input class="fi" placeholder="e.g. More Reviews. More Trust." />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. More Reviews. More Trust."
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Competitors / Brands They Admire</div>
-              <input class="fi" placeholder="For design direction reference" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="For design direction reference"
+              ></div>
             </div>
           </div>
         </section>
@@ -760,85 +931,117 @@
               <div class="field-label">
                 Domain Name <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="e.g. northrankmedia.com" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. northrankmedia.com"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Domain Registrar</div>
-              <input
-                class="fi"
-                placeholder="e.g. GoDaddy, Namecheap, Google Domains"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. GoDaddy, Namecheap, Squarespace"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">
-                Do we need DNS access? <span class="req">*</span>
+                DNS Access Needed? <span class="req">*</span>
               </div>
-              <input
-                class="fi"
-                placeholder="Yes / No — for pointing domain to GHL"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Yes / No — for connecting domain to the site"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Current Website URL (if any)</div>
-              <input class="fi" placeholder="https://..." />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="https://..."
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Pages Needed on New Site</div>
-              <input
-                class="fi"
-                placeholder="Home, About, Services, Contact — anything custom?"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Home, About, Services, Contact — anything custom?"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Services to List on Website</div>
-              <input class="fi" placeholder="List all services to display" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="List all services to display"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Headline / Core Value Proposition</div>
-              <input
-                class="fi"
-                placeholder="What's the one thing they want visitors to know?"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="What's the one thing they want visitors to know?"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Blog Section?</div>
-              <input class="fi" placeholder="Yes / No" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Yes / No"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">Lead Form — What info to collect?</div>
-              <input
-                class="fi"
-                placeholder="Name, email, phone, service, message?"
-              />
+              <div class="field-label">Lead Form — What Info to Collect?</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Name, email, phone, service type, message?"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">Primary CTA (Call to Action)</div>
-              <input
-                class="fi"
-                placeholder='e.g. "Book a Free Demo", "Call Now"'
-              />
+              <div class="field-label">Primary Call to Action</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph='e.g. "Book a Free Demo", "Call Now", "Get a Quote"'
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Testimonials / Reviews to Feature</div>
-              <input class="fi" placeholder="Copy or screenshots to share?" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Copy or screenshots to share?"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Photos / Images for Website</div>
-              <input class="fi" placeholder="Client supplies? Or use stock?" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Client supplies? Or use stock?"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">Google Analytics / Tracking?</div>
-              <input
-                class="fi"
-                placeholder="Already set up? Want us to add it?"
-              />
+              <div class="field-label">Analytics / Tracking?</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Google Analytics? Facebook Pixel?"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Chat Widget on Site?</div>
-              <input
-                class="fi"
-                placeholder="Yes / No — GHL webchat or other?"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Yes / No — what type?"
+              ></div>
             </div>
           </div>
 
@@ -846,87 +1049,110 @@
             Sections to Remove from Demo Site (pending payment)
           </p>
           <div class="fields single">
-            <div class="field" style="min-height: 80px">
+            <div class="field">
               <div class="field-label">Items Flagged for Removal</div>
               <div class="field-note" style="margin-bottom: 6px">
-                AI Tools section, Interactive Floor Map confirmed. Note any
+                AI Tools section, Interactive Floor Map confirmed. Add any
                 additional items below.
               </div>
-              <textarea
-                class="fi"
-                placeholder="Additional removal requests from client..."
-              ></textarea>
+              <div
+                class="fi-div tall"
+                contenteditable="true"
+                data-ph="Additional removal requests from client..."
+              ></div>
             </div>
           </div>
         </section>
 
         <div class="page-break"></div>
 
-        <!-- 05 GHL SETUP -->
+        <!-- 05 PLATFORM SETUP — internal only, no brand names -->
         <section>
           <div class="section-header">
             <span class="section-num">05</span>
-            <span class="section-title">GoHighLevel Setup</span>
-            <span class="section-tag ghl">GHL</span>
+            <span class="section-title">Platform Setup</span>
+            <span class="section-tag int">Internal</span>
           </div>
           <div class="note-box">
-            Internal use only. Capture everything needed to fully configure the
-            GHL subaccount without going back to the client.
+            Internal use only — not shared with the client. All platform and
+            automation configuration details live here.
           </div>
           <div class="fields">
             <div class="field">
               <div class="field-label">
-                Subaccount Name in GHL <span class="req">*</span>
+                Account Name <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="Name to create subaccount under" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Name for the client account"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">GHL Subaccount ID (after creation)</div>
-              <input class="fi" placeholder="Fill after subaccount created" />
+              <div class="field-label">Account ID (after creation)</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Fill after account is created"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">GHL Plan Type</div>
-              <input class="fi" placeholder="e.g. Starter, Pro" />
+              <div class="field-label">Custom Domain to Connect</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. northrankmedia.com"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">Custom Domain to Attach</div>
-              <input class="fi" placeholder="e.g. northrankmedia.com" />
+              <div class="field-label">Client Login Email</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Email for client dashboard access"
+              ></div>
+              <div class="field-note">Will they need their own login?</div>
             </div>
             <div class="field">
-              <div class="field-label">
-                GHL User Invite Email (client login)
-              </div>
-              <input class="fi" placeholder="Email to send GHL invite to" />
-              <div class="field-note">Will they have their own GHL login?</div>
+              <div class="field-label">Lead Notification Email</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Where to send new lead alerts"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">Notification Email for GHL Leads</div>
-              <input class="fi" placeholder="Where to send new lead alerts" />
-            </div>
-            <div class="field">
-              <div class="field-label">From Name (for GHL emails/SMS)</div>
-              <input class="fi" placeholder="e.g. North Rank Media" />
+              <div class="field-label">From Name (for emails/SMS)</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. North Rank Media"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Reply-To Email</div>
-              <input class="fi" placeholder="e.g. info@northrankmedia.com" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. info@northrankmedia.com"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Timezone</div>
-              <input class="fi" placeholder="e.g. America/Chicago" />
-            </div>
-            <div class="field">
-              <div class="field-label">Business Address (for GHL profile)</div>
-              <input class="fi" placeholder="Full address" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. America/Chicago"
+              ></div>
             </div>
           </div>
 
-          <p class="sub-label">GHL Services to Activate</p>
+          <p class="sub-label">Setup Checklist</p>
           <div class="checklist">
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                GHL Website (domain connected + published)<span
+                Website live (domain connected + published)<span
                   class="check-sub"
                   >Subdomain or custom domain pointed via DNS</span
                 >
@@ -935,15 +1161,15 @@
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Lead Capture Form (connected to pipeline)<span class="check-sub"
-                  >Linked to automation / notification workflow</span
+                Lead capture form connected to pipeline<span class="check-sub"
+                  >Linked to notification workflow</span
                 >
               </div>
             </label>
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Contact Pipeline Created<span class="check-sub"
+                Contact pipeline created<span class="check-sub"
                   >Stages: New Lead → Contacted → Qualified → Closed /
                   Lost</span
                 >
@@ -952,50 +1178,46 @@
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Email / SMS Notification Workflow<span class="check-sub"
-                  >Alert owner when new lead comes in</span
+                Lead notification workflow active<span class="check-sub"
+                  >Owner alerted when new form submission comes in</span
                 >
               </div>
             </label>
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Missed Call Text Back (if in scope)<span class="check-sub"
-                  >Confirm whether client wants this enabled</span
-                >
-                <input class="check-note-input" placeholder="Notes..." />
+                Missed call text-back (if in scope)
+                <span
+                  class="check-note-div"
+                  contenteditable="true"
+                  data-ph="Notes..."
+                ></span>
               </div>
             </label>
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Social Planner Connected (Facebook + Instagram)<span
+                Social accounts connected (Facebook + Instagram)<span
                   class="check-sub"
-                  >Walk client through OAuth connection in GHL — do not collect
-                  passwords</span
+                  >Walked client through OAuth authorization — no passwords
+                  collected</span
                 >
               </div>
             </label>
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                GBP (Google Business Profile) Connected<span class="check-sub"
-                  >If in scope</span
-                >
+                Google Business Profile connected (if in scope)
               </div>
             </label>
             <label class="check-item">
               <input type="checkbox" />
-              <div class="check-text">
-                Calendar / Booking Page<span class="check-sub">If needed</span>
-              </div>
+              <div class="check-text">Booking / calendar page (if needed)</div>
             </label>
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Review Request Workflow<span class="check-sub"
-                  >If in scope — automated SMS/email review ask</span
-                >
+                Review request automation (if in scope)
               </div>
             </label>
           </div>
@@ -1009,9 +1231,9 @@
             <span class="section-tag social">Social</span>
           </div>
           <div class="note-box">
-            Client is on the 12 posts/month plan — duplicated to both Facebook
-            and Instagram. Social accounts will be connected live in GHL
-            (OAuth), so raw credentials are not needed.
+            12 posts/month duplicated to both Facebook and Instagram. Accounts
+            will be connected via authorization walkthrough — no raw credentials
+            needed.
           </div>
 
           <p class="sub-label">Account Details</p>
@@ -1020,43 +1242,58 @@
               <div class="field-label">
                 Facebook Page Name <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="Exact page name" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Exact page name"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Facebook Page URL</div>
-              <input class="fi" placeholder="https://facebook.com/..." />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="https://facebook.com/..."
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">
                 Instagram Handle <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="@handle" />
-              <div class="field-note">Must be Business or Creator account</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="@handle"
+              ></div>
+              <div class="field-note">
+                Must be a Business or Creator account
+              </div>
             </div>
             <div class="field">
               <div class="field-label">
                 Is Instagram linked to the Facebook Page?
               </div>
-              <input
-                class="fi"
-                placeholder="Yes / No — required for GHL Social Planner"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Yes / No — required for scheduling to work"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Facebook Page Admin Email</div>
-              <input
-                class="fi"
-                placeholder="Person who will authorize GHL connection"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Person who will authorize the connection"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">
-                Who will do the GHL connect walkthrough?
-              </div>
-              <input
-                class="fi"
-                placeholder="Owner / marketing team member name"
-              />
+              <div class="field-label">Who Does the Connect Walkthrough?</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Owner / marketing team member name"
+              ></div>
             </div>
           </div>
 
@@ -1064,70 +1301,83 @@
           <div class="fields">
             <div class="field">
               <div class="field-label">Target Audience</div>
-              <input
-                class="fi"
-                placeholder="Demographics, local area, business type?"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Demographics, local area, business type?"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Preferred Post Types</div>
-              <input
-                class="fi"
-                placeholder="Before/after, tips, promos, reviews, behind-scenes..."
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Before/after, tips, promos, reviews, behind-scenes..."
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Topics / Services to Highlight</div>
-              <input
-                class="fi"
-                placeholder="Key services to feature in posts"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Key services to feature in posts"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Topics / Things to Avoid</div>
-              <input
-                class="fi"
-                placeholder="Competitors, pricing, sensitive topics"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Competitors, pricing, sensitive subjects"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Preferred Post Days / Times</div>
-              <input
-                class="fi"
-                placeholder="Or leave blank — we schedule for peak engagement"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Or leave blank — we schedule for peak engagement"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Hashtag Preferences</div>
-              <input class="fi" placeholder="Any branded hashtags they use?" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Any branded hashtags they use?"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Content They'll Supply to Us</div>
-              <input
-                class="fi"
-                placeholder="Photos, videos, offers, announcements"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Photos, videos, offers, announcements"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Content Delivery Method</div>
-              <input
-                class="fi"
-                placeholder="Google Drive / WhatsApp / Email / Dropbox"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Google Drive / WhatsApp / Email / Dropbox"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Approval Process</div>
-              <input
-                class="fi"
-                placeholder="Approve each post? Or post directly?"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Approve each post before it goes live?"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Approval Turnaround</div>
-              <input
-                class="fi"
-                placeholder="e.g. 48hrs — what happens if no response?"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. 48hrs — what if no response by deadline?"
+              ></div>
             </div>
           </div>
 
@@ -1135,19 +1385,35 @@
           <div class="fields">
             <div class="field">
               <div class="field-label">Call Format</div>
-              <input class="fi" placeholder="Zoom / Google Meet / Phone" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Zoom / Google Meet / Phone"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Duration Expected</div>
-              <input class="fi" placeholder="e.g. 15–30 min" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. 15–30 min"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Recurring Day + Time</div>
-              <input class="fi" placeholder="e.g. Tuesday 2:00 PM CST" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. Tuesday 2:00 PM CST"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">Who attends on their side?</div>
-              <input class="fi" placeholder="Names / roles" />
+              <div class="field-label">Who Attends on Their Side?</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Names / roles"
+              ></div>
             </div>
           </div>
         </section>
@@ -1163,8 +1429,12 @@
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Logo files (PNG transparent + SVG)
-                <input class="check-note-input" placeholder="Received via..." />
+                Logo files received (PNG transparent + SVG)
+                <span
+                  class="check-note-div"
+                  contenteditable="true"
+                  data-ph="Received via..."
+                ></span>
               </div>
             </label>
             <label class="check-item">
@@ -1178,39 +1448,38 @@
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Domain registrar login / DNS access<span class="check-sub"
-                  >Needed to point domain to GHL — or client can do it with our
-                  instructions</span
+                Domain registrar access / DNS credentials<span class="check-sub"
+                  >Or client handles DNS with our instructions</span
                 >
               </div>
             </label>
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Facebook Page admin access granted to our account<span
+                Facebook Page admin access granted<span class="check-sub"
+                  >Required for social account connection</span
+                >
+              </div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
+              <div class="check-text">
+                Instagram confirmed as Business/Creator + linked to FB Page
+              </div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" />
+              <div class="check-text">
+                Website copy supplied (About, Services, bio text)<span
                   class="check-sub"
-                  >Required for GHL Social Planner OAuth</span
+                  >Or we write from demo</span
                 >
               </div>
             </label>
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Instagram Business account confirmed + linked to FB Page
-              </div>
-            </label>
-            <label class="check-item">
-              <input type="checkbox" />
-              <div class="check-text">
-                Website copy (About, Services, bio text)<span class="check-sub"
-                  >If they want custom copy vs what we write from demo</span
-                >
-              </div>
-            </label>
-            <label class="check-item">
-              <input type="checkbox" />
-              <div class="check-text">
-                Photos of team / office / work examples<span class="check-sub"
+                Team / office / work photos supplied<span class="check-sub"
                   >For website and social posts</span
                 >
               </div>
@@ -1218,9 +1487,9 @@
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Google Business Profile access (if managing GBP)<span
+                Google Business Profile access (if managing)<span
                   class="check-sub"
-                  >Owner or Manager level access needed</span
+                  >Owner or Manager level needed</span
                 >
               </div>
             </label>
@@ -1239,11 +1508,12 @@
             <label class="check-item">
               <input type="checkbox" />
               <div class="check-text">
-                Shared folder created for ongoing content delivery
-                <input
-                  class="check-note-input"
-                  placeholder="Drive / Dropbox link..."
-                />
+                Shared content folder created
+                <span
+                  class="check-note-div"
+                  contenteditable="true"
+                  data-ph="Drive / Dropbox link..."
+                ></span>
               </div>
             </label>
           </div>
@@ -1261,43 +1531,69 @@
               <div class="field-label">
                 Service Package Agreed <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="Website + Social (12 posts/mo)" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Website + Social (12 posts/mo)"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">
                 Monthly Retainer Amount <span class="req">*</span>
               </div>
-              <input class="fi" placeholder="$ per month" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="$ per month"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Payment Method</div>
-              <input
-                class="fi"
-                placeholder="Stripe / Bank transfer / Check / Other"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Stripe / Bank transfer / Check / Other"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Billing Date</div>
-              <input class="fi" placeholder="e.g. 1st of each month" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="e.g. 1st of each month"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Contract / Agreement Signed?</div>
-              <input class="fi" placeholder="Yes / No / Pending" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Yes / No / Pending"
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">First Payment Received?</div>
-              <input
-                class="fi"
-                placeholder="Yes / No — website finalization begins post-payment"
-              />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Yes / No — website finalization begins post-payment"
+              ></div>
             </div>
             <div class="field">
-              <div class="field-label">Invoice / Billing Email</div>
-              <input class="fi" placeholder="billing@..." />
+              <div class="field-label">Billing Email</div>
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="billing@..."
+              ></div>
             </div>
             <div class="field">
               <div class="field-label">Setup Fee Agreed?</div>
-              <input class="fi" placeholder="Yes / No — amount if yes" />
+              <div
+                class="fi-div"
+                contenteditable="true"
+                data-ph="Yes / No — amount if yes"
+              ></div>
             </div>
           </div>
         </section>
@@ -1309,22 +1605,24 @@
             <span class="section-title">Additional Notes &amp; Open Items</span>
           </div>
           <div class="fields single">
-            <div class="field" style="min-height: 90px">
+            <div class="field">
               <div class="field-label">Notes</div>
-              <textarea
-                class="fi"
-                placeholder="General notes from onboarding call..."
-              ></textarea>
+              <div
+                class="fi-div tall"
+                contenteditable="true"
+                data-ph="General notes from onboarding call..."
+              ></div>
             </div>
-            <div class="field" style="min-height: 90px">
+            <div class="field">
               <div class="field-label">Pending Items / Open Questions</div>
               <div class="field-note" style="margin-bottom: 6px">
                 Things not yet resolved that need follow-up
               </div>
-              <textarea
-                class="fi"
-                placeholder="e.g. Waiting on logo files, DNS access TBD..."
-              ></textarea>
+              <div
+                class="fi-div tall"
+                contenteditable="true"
+                data-ph="e.g. Waiting on logo files, DNS access TBD..."
+              ></div>
             </div>
           </div>
         </section>
@@ -1351,12 +1649,10 @@
 
         <div class="footer">
           <span>North Rank Media — Client Onboarding Document</span>
-          <span>Confidential — For Internal Use</span>
+          <span>Confidential</span>
         </div>
       </div>
-      <!-- /body-wrap -->
     </div>
-    <!-- /doc -->
 
     <button class="print-btn no-print" onclick="window.print()">
       ⎙ Print / Save PDF
